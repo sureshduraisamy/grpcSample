@@ -1,23 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Google.Protobuf.WellKnownTypes;
+﻿using Grpc.SA.DAL.Context;
+using Grpc.SA.DAL.IRepository;
+using Grpc.SA.DAL.Repositories;
+using Grpc.Server.Handler;
+using Grpc.Server.Person;
+using Grpc.Server.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace Grpc.Server
 {
     public class Startup
     {
+
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+        public IConfiguration Configuration { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+
+            //Adding Dependency Injection for DBContext
+            services.AddDbContext<PersonContext>(options =>
+            {
+                options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddMediatR(typeof(GetPersonByIdQuery).GetTypeInfo().Assembly);
+            services.AddScoped(typeof(IPersonRepository), typeof(PersonRepository));
+            //services.AddMediatR(typeof(Startup).Assembly);
+
             services.AddGrpc();
+
+
+            //Adding Db Context For Repositories
+            //services.AddSingleton<IPersonRepository, PersonRepository>();
+            
+            
+            
+            //services.AddTransient<IRequestHandler<GetPersonByIdQuery, PersonResponse>, GetPersonByIdHandler>(); // Mediator dependency injection request
 
 
             //services.AddSwaggerGen(options =>
@@ -28,7 +59,7 @@ namespace Grpc.Server
             //            Title ="Swagger Demo API",
             //            Description = "Demo API for showing Swagger",
             //            Version="v1"
-                       
+
             //        });
             //});
         }
@@ -46,6 +77,7 @@ namespace Grpc.Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<GreeterService>();
+                endpoints.MapGrpcService<PersonService>();
 
                 endpoints.MapGet("/", async context =>
                 {

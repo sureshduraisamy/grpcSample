@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option csharp_namespace = "Grpc.Server.Person";
+
+package person;
+
+//Services
+service Person {
+    rpc GetPersonById (PersonSearchRequest) returns (PersonResponse);
+}
+
+//The  Search Request message
+message PersonSearchRequest {
+  int32 id = 1;
+}
+
+// The response message containing the person details.
+message PersonResponse {
+  int32 id = 1;
+  string firstname = 2;
+  string lastname = 3;
+}
