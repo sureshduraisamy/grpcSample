@@ -9,20 +9,21 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Grpc.SA.DAL.IRepository;
+using Grpc.SA.DAL.IServiceProviders;
 
 namespace Grpc.Server.Handler
 {
     public class GetPersonByIdHandler : IRequestHandler<GetPersonByIdQuery, PersonResponse>
     {
-        private  IPersonRepository _personRepository;
-        public GetPersonByIdHandler(IPersonRepository personRepository)
+        private  IPersonServiceProvider _personServiceProvider;
+        public GetPersonByIdHandler(IPersonServiceProvider personServiceProvider)
         {
-            _personRepository = personRepository;
+            _personServiceProvider = personServiceProvider;
         }
 
         public async Task<PersonResponse> Handle(GetPersonByIdQuery request, CancellationToken cancellationToken)
         {
-           var result =  await _personRepository.GetPersonByIdAsync(request.Id);
+           var result =  await _personServiceProvider.GetPersonByIdAsync(request.Id);
 
             return result == null ? null : new PersonResponse {  
             Id = 1,
