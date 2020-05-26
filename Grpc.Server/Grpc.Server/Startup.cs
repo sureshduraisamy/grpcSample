@@ -1,6 +1,8 @@
 ﻿using Grpc.SA.DAL.Context;
 using Grpc.SA.DAL.IRepository;
+using Grpc.SA.DAL.IServiceProviders;
 using Grpc.SA.DAL.Repositories;
+using Grpc.SA.DAL.ServiceProviders;
 using Grpc.Server.Handler;
 using Grpc.Server.Person;
 using Grpc.Server.Queries;
@@ -38,6 +40,7 @@ namespace Grpc.Server
 
             services.AddMediatR(typeof(GetPersonByIdQuery).GetTypeInfo().Assembly);
             services.AddScoped(typeof(IPersonRepository), typeof(PersonRepository));
+            services.AddScoped(typeof(IPersonServiceProvider), typeof(PersonServiceProvider));
             //services.AddMediatR(typeof(Startup).Assembly);
 
             services.AddGrpc();

@@ -1,6 +1,7 @@
 ﻿using Grpc.SA.DAL.Context;
 using Grpc.SA.DAL.IRepository;
 using Grpc.SA.DAL.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
