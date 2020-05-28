@@ -22,6 +22,8 @@ namespace Grpc.Client
             PersonResponse response = await client1.GetPersonByIdAsync(new PersonSearchRequest { Id = 1 });
             Console.WriteLine($"{response.Id}-{response.Firstname}-{response.Lastname}");
             Console.ReadLine();
+
+
         }
     }
 }
